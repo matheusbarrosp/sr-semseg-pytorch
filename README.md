@@ -1,13 +1,12 @@
 # Super Resolution + Semantic Segmentation Framework
 ![](.readme/pipeline.pdf)
 
-[========]
 
 ## Super Resolution (D-DBPN) instructions
 
 ------------
 
-####Training
+### Training
 Modify and run train.sh file according to the required configuration or 
 
 ```
@@ -18,7 +17,7 @@ python main.py [parameters]
 
 ------------
 
-####Testing
+### Testing
 Modify and run test.sh file according to the required configuration or 
 
 ```
@@ -29,7 +28,7 @@ python eval.py [parameters]
 
 ------------
 
-####Folder configuration
+### Folder configuration
 
 - dataset_name (main dataset folder)
 	- train
@@ -39,13 +38,11 @@ python eval.py [parameters]
 	- test
 		- {testing LR images}
 
-[========]
-
 ## Semantic Segmentation (Segnet) instructions
 
 ------------
 
-####Training
+### Training
 Modify and run train_script.sh file according to the required configuration or 
 
 ```
@@ -60,7 +57,7 @@ Parameters:
 
 ------------
 
-####Testing
+### Testing
 Modify and run test.sh file according to the required configuration or 
 
 ```
@@ -71,7 +68,7 @@ Parameters: same as training
 
 ------------
 
-####Folder configuration
+### Folder configuration
 
 - dataset_name (main dataset folder)
 	- images
@@ -113,7 +110,7 @@ guaranesia_1.png
 ```
 *For multiple folds, there would also be coffee\_trn\_f1.txt, coffee\_trn\_f2.txt and so on, each one containing its corresponding images*
 
-[========]
+------------
 
 ## Citations
 If you find this work useful, please consider citing it:
