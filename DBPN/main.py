@@ -19,7 +19,7 @@ from math import log10
 parser = argparse.ArgumentParser(description='PyTorch Super Res Example')
 parser.add_argument('--upscale_factor', type=int, default=8, help="super resolution upscale factor")
 parser.add_argument('--batchSize', type=int, default=1, help='training batch size')
-parser.add_argument('--nEpochs', type=int, default=2000, help='number of epochs to train for')
+parser.add_argument('--nEpochs', type=int, default=300, help='number of epochs to train for')
 parser.add_argument('--snapshots', type=int, default=50, help='Snapshots')
 parser.add_argument('--start_iter', type=int, default=1, help='Starting Epoch')
 parser.add_argument('--lr', type=float, default=1e-4, help='Learning Rate')
@@ -27,19 +27,19 @@ parser.add_argument('--gpu_mode', type=bool, default=True)
 parser.add_argument('--threads', type=int, default=1, help='number of threads for data loader to use')
 parser.add_argument('--seed', type=int, default=123, help='random seed to use. Default=123')
 parser.add_argument('--gpus', default=1, type=int, help='number of gpu')
-parser.add_argument('--data_dir', type=str, default='./Dataset')
+parser.add_argument('--data_dir', type=str, default='./datasets')
 parser.add_argument('--data_augmentation', type=bool, default=True)
-parser.add_argument('--hr_train_dataset', type=str, default='DIV2K_train_HR')
+parser.add_argument('--hr_train_dataset', type=str)
 parser.add_argument('--model_type', type=str, default='DBPN')
 parser.add_argument('--residual', type=bool, default=False)
 parser.add_argument('--patch_size', type=int, default=40, help='Size of cropped HR image')
 parser.add_argument('--pretrained_sr', help='sr pretrained base model')
 parser.add_argument('--pretrained', type=bool, default=False)
 parser.add_argument('--save_folder', default='weights/', help='Location to save checkpoint models')
-parser.add_argument('--prefix', default='tpami_residual_filter8', help='Location to save checkpoint models')
-parser.add_argument('--input_dir', type=str, default='Input', help='Test dir')
-parser.add_argument('--testBatchSize', type=int, default=1, help='testing batch size')
-parser.add_argument('--test_dataset', type=str, default='Set5_LR_x8')
+parser.add_argument('--prefix', default='sr', help='prefix to checkpoint models')
+parser.add_argument('--input_dir', type=str, default='Input', help='Validation dir')
+parser.add_argument('--val_batch_size', type=int, default=1, help='validation batch size')
+parser.add_argument('--val_dataset', type=str)
 
 opt = parser.parse_args()
 gpus_list = range(opt.gpus)
@@ -74,12 +74,12 @@ def train(epoch):
 
     print("===> Epoch {} Complete: Avg. Loss: {:.4f}".format(epoch, epoch_loss / len(training_data_loader)))
 
-def test():
+def validate():
     model.eval()
     avg_psnr = 0
     avg_psnr_bicubic = 0
     
-    for iteration, batch in enumerate(testing_data_loader, 1):
+    for iteration, batch in enumerate(val_data_loader, 1):
         with torch.no_grad():
             input, target, bicubic = Variable(batch[0]), Variable(batch[1]), Variable(batch[2])
 
@@ -101,9 +101,9 @@ def test():
         psnr = 10 * log10(1 / mse.data)
         avg_psnr_bicubic += psnr
         
-    print("===> Avg. PSNR: {:.4f} dB".format(avg_psnr / len(testing_data_loader)))
-    print("===> Avg. PSNR Bicubic: {:.4f} dB".format(avg_psnr_bicubic / len(testing_data_loader)))
-    return avg_psnr / len(testing_data_loader)
+    print("===> Avg. PSNR: {:.4f} dB".format(avg_psnr / len(val_data_loader)))
+    print("===> Avg. PSNR Bicubic: {:.4f} dB".format(avg_psnr_bicubic / len(val_data_loader)))
+    return avg_psnr / len(val_data_loader)
 
     
 def print_network(net):
@@ -130,8 +130,8 @@ print('===> Loading datasets')
 train_set = get_training_set(opt.data_dir, opt.hr_train_dataset, opt.upscale_factor, opt.patch_size, opt.data_augmentation)
 training_data_loader = DataLoader(dataset=train_set, num_workers=opt.threads, batch_size=opt.batchSize, shuffle=True)
 
-test_set = get_validation_set(opt.input_dir, opt.test_dataset, opt.upscale_factor)
-testing_data_loader = DataLoader(dataset=test_set, num_workers=opt.threads, batch_size=opt.testBatchSize, shuffle=False)
+val_set = get_validation_set(opt.input_dir, opt.val_dataset, opt.upscale_factor)
+val_data_loader = DataLoader(dataset=val_set, num_workers=opt.threads, batch_size=opt.val_batch_size, shuffle=False)
 
 print('===> Building model ', opt.model_type)
 model = DBPN(num_channels=3, base_filter=64,  feat = 256, num_stages=7, scale_factor=opt.upscale_factor) 
@@ -164,7 +164,7 @@ best_model = None
 epoch_since_best = -1
 for epoch in range(opt.start_iter, opt.nEpochs + 1):
     train(epoch)
-    current_psnr = test()
+    current_psnr = validate()
     # learning rate is decayed by a factor of 10 every half of total epochs
     if (epoch) % (opt.nEpochs/2) == 0:
         for param_group in optimizer.param_groups:

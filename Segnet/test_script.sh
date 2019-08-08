@@ -1,1 +1,1 @@
-python -W ignore test.py segnet 1 coffee_3_semantic semantic
+python -W ignore test.py segnet 0 coffee_semseg coffee

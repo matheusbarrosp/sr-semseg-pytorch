@@ -24,17 +24,17 @@ ckpt_path = './ckpt'
 outp_path = './outputs'
 
 # Reading system parameters.
-conv_name = sys.argv[1]
-fold_name = sys.argv[2]
-data_name = sys.argv[3]
-task_name = sys.argv[4]
+conv_name = sys.argv[1] # Semantic segmentation network name (default: segnet)
+fold_name = sys.argv[2] # Default: 0 (for k-fold validation)
+data_name = sys.argv[3] # Name of the folder of the dataset
+task_name = sys.argv[4] # Name of the segmentation task (for when you have diffent segmentations for the same image), necessary for the folder configuration (see readme).
 
 # Setting experiment name.
 exp_name  = conv_name + '_' + data_name + '_' + task_name + '_' + fold_name
 
 # Setting predefined arguments.
 args = {
-    'epoch_num': 1000,     # Number of epochs.
+    'epoch_num': 500,     # Number of epochs.
     'lr': 1e-4,           # Learning rate.
     'weight_decay': 5e-4, # L2 penalty.
     'momentum': 0.9,      # Momentum.
