@@ -49,9 +49,13 @@ python  train.py [conv_name] [fold_name] [data_name] [task_name]
 ```
 
 Parameters:
+
 *conv\_name* = Semantic segmentation network name (default: segnet)
+
 *fold\_name* = Default: 0 (for k-fold validation)
+
 *data\_name* = Name of the folder of the dataset
+
 *task\_name* = Name of the segmentation task (for when you have diffent segmentations for the same image), necessary for the folder configuration (see below).
 
 ------------
@@ -78,6 +82,7 @@ Parameters: same as training
 	- {Fold files: txt files for each fold for training, test and validation (see below)}
 
 **Fold files:** for each fold, create one file for the training images, one file for the test images and one file for the validation images. Each of these files should contain the name of the images (one image per line) of the corresponding category (train, test or validation). The files must be named [task\_name]\_[trn | val | tst]\_f[fold\_name].txt
+
 **Example:** Let's suppose we want to segment coffee crops. Our dataset is named "coffee\_dataset" and our task\_name is "coffee" (what we want to segment). We will not use k-fold validation (thus we have only one fold, which will be named "0", that is fold\_name=0). We have images "montesanto_1.png" and "montesanto_2.png" as training, "guaxupe_1.png" as validation and "guaranesia_1.png" as test. Therefore, our folder configuration would be:
 - coffee\_dataset
 	- images
