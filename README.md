@@ -1,5 +1,5 @@
 # Super Resolution + Semantic Segmentation Framework
-![](.readme/pipeline.pdf)
+![](.readme/pipeline.png)
 
 ------------
 
