@@ -120,4 +120,4 @@ guaranesia_1.png
 ## Citations
 If you find this work useful, please consider citing it:
 
-(to be included)
+M. B. Pereira and J. A. dos Santos, "How Effective Is Super-Resolution to Improve Dense Labelling of Coarse Resolution Imagery?," 2019 32nd SIBGRAPI Conference on Graphics, Patterns and Images (SIBGRAPI), 2019, pp. 202-209, doi: 10.1109/SIBGRAPI.2019.00035.
